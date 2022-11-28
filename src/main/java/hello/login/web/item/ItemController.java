@@ -19,42 +19,50 @@ import java.util.List;
 @Controller
 @RequestMapping("/items")
 @RequiredArgsConstructor
-public class ItemController {
+public class ItemController
+{
 
     private final ItemRepository itemRepository;
 
     @GetMapping
-    public String items(Model model) {
+    public String items(Model model)
+    {
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items", items);
         return "items/items";
     }
 
     @GetMapping("/{itemId}")
-    public String item(@PathVariable long itemId, Model model) {
+    public String item(@PathVariable long itemId, Model model)
+    {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
         return "items/item";
     }
 
     @GetMapping("/add")
-    public String addForm(Model model) {
+    public String addForm(Model model)
+    {
         model.addAttribute("item", new Item());
         return "items/addForm";
     }
 
     @PostMapping("/add")
-    public String addItem(@Validated @ModelAttribute("item") ItemSaveForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String addItem(@Validated @ModelAttribute("item") ItemSaveForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes)
+    {
 
         //특정 필드 예외가 아닌 전체 예외
-        if (form.getPrice() != null && form.getQuantity() != null) {
+        if(form.getPrice() != null && form.getQuantity() != null)
+        {
             int resultPrice = form.getPrice() * form.getQuantity();
-            if (resultPrice < 10000) {
+            if(resultPrice < 10000)
+            {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
         }
 
-        if (bindingResult.hasErrors()) {
+        if(bindingResult.hasErrors())
+        {
             log.info("errors={}", bindingResult);
             return "items/addForm";
         }
@@ -72,24 +80,29 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}/edit")
-    public String editForm(@PathVariable Long itemId, Model model) {
+    public String editForm(@PathVariable Long itemId, Model model)
+    {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
         return "items/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute("item") ItemUpdateForm form, BindingResult bindingResult) {
+    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute("item") ItemUpdateForm form, BindingResult bindingResult)
+    {
 
         //특정 필드 예외가 아닌 전체 예외
-        if (form.getPrice() != null && form.getQuantity() != null) {
+        if(form.getPrice() != null && form.getQuantity() != null)
+        {
             int resultPrice = form.getPrice() * form.getQuantity();
-            if (resultPrice < 10000) {
+            if(resultPrice < 10000)
+            {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
         }
 
-        if (bindingResult.hasErrors()) {
+        if(bindingResult.hasErrors())
+        {
             log.info("errors={}", bindingResult);
             return "items/editForm";
         }
